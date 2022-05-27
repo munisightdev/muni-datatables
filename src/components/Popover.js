@@ -30,12 +30,12 @@ const Popover = ({ className, trigger, refExit, hide, content, ...providedProps 
   delete providedProps.classes.closeIcon; // remove non-standard class from being passed to the popover component
 
   const transformOriginSpecs = {
-    vertical: 'top',
+    vertical: 'center',
     horizontal: 'center',
   };
 
   const anchorOriginSpecs = {
-    vertical: 'bottom',
+    vertical: 'center',
     horizontal: 'center',
   };
 
@@ -52,7 +52,7 @@ const Popover = ({ className, trigger, refExit, hide, content, ...providedProps 
       handleClick(event);
     },
   };
-
+  
   return (
     <>
       <span {...triggerProps}>{trigger}</span>
@@ -64,12 +64,14 @@ const Popover = ({ className, trigger, refExit, hide, content, ...providedProps 
         anchorEl={anchorEl.current}
         anchorOrigin={anchorOriginSpecs}
         transformOrigin={transformOriginSpecs}
-        {...providedProps}>
+        {...providedProps}
+      >
         <IconButton
           aria-label="Close"
           onClick={handleRequestClose}
           className={closeIconClass}
-          style={{ position: 'absolute', right: '4px', top: '4px', zIndex: '1000' }}>
+          style={{ position: 'absolute', right: '4px', top: '4px', zIndex: '1000' }}
+        >
           <CloseIcon />
         </IconButton>
         {content}

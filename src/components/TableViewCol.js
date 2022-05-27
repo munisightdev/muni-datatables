@@ -1,104 +1,82 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import Checkbox from '@material-ui/core/Checkbox';
-import Typography from '@material-ui/core/Typography';
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { makeStyles } from '@material-ui/core/styles';
+import { FormControl, Typography, FormGroup, Checkbox, FormControlLabel } from '@material-ui/core';
+import { columnSelectionStyles as getStyles } from './styles';
+import TableViewColSearchBar from './TableViewColSearchBar';
 
-const useStyles = makeStyles(
-  theme => ({
-    root: {
-      padding: '16px 24px 16px 24px',
-      fontFamily: 'Roboto',
-    },
-    title: {
-      marginLeft: '-7px',
-      marginRight: '24px',
-      fontSize: '14px',
-      color: theme.palette.text.secondary,
-      textAlign: 'left',
-      fontWeight: 500,
-    },
-    formGroup: {
-      marginTop: '8px',
-    },
-    formControl: {},
-    checkbox: {
-      padding: '0px',
-      width: '32px',
-      height: '32px',
-    },
-    checkboxRoot: {},
-    checked: {},
-    label: {
-      fontSize: '15px',
-      marginLeft: '8px',
-      color: theme.palette.text.primary,
-    },
-  }),
-  { name: 'MUIDataTableViewCol' },
-);
+function parseColumns(columns) {
+  return columns.reduce((acc, { label, name, display }, dataIndex) => {
+    if (display !== 'excluded') acc.push({ label, dataIndex, name, display });
+    return acc;
+  }, []);
+}
 
-const TableViewCol = ({ columns, options, components = {}, onColumnUpdate, updateColumns }) => {
-  const classes = useStyles();
-  const textLabels = options.textLabels.viewColumns;
-  const CheckboxComponent = components.Checkbox || Checkbox;
+export default function TableViewCol({ columns, onColumnUpdate, options }) {
+  const defaultColumns = useMemo(() => parseColumns(columns), []);
+  const [displayColumns, setDisplayColumns] = useState(defaultColumns);
+  const classes = getStyles();
 
-  const handleColChange = index => {
+  const handleColumnSearchBarChange = (value, previous) => {
+    // if the input is the same or builds on top of the previous we can just search inside the same dataset
+    const dataSet = value.includes(previous) ? displayColumns : defaultColumns;
+    const searchValue = value.toLowerCase();
+    setDisplayColumns(
+      dataSet.reduce((acc, cur) => {
+        if (cur.label.toLowerCase().includes(searchValue)) acc.push(cur);
+        return acc;
+      }, []),
+    );
+  };
+
+  const onCheck = index => {
+    setDisplayColumns([
+      ...displayColumns.map(c => {
+        if (c.dataIndex === index) {
+          const tmp = c;
+          tmp.display = c.display === 'true' ? 'false' : 'true';
+        }
+        return c;
+      }),
+    ]);
     onColumnUpdate(index);
   };
 
   return (
-    <FormControl component={'fieldset'} className={classes.root} aria-label={textLabels.titleAria}>
-      <Typography variant="caption" className={classes.title}>
-        {textLabels.title}
-      </Typography>
-      <FormGroup className={classes.formGroup}>
-        {columns.map((column, index) => {
-          return (
-            column.display !== 'excluded' &&
-            column.viewColumns !== false && (
+    <div className={classes.popoverBody}>
+      <FormControl component="fieldset" aria-label="view columns dialog title">
+        <Typography variant="overline" className={classes.title}>
+          {options.textLabels.viewColumns.title}
+        </Typography>
+        <TableViewColSearchBar setSearchBarText={handleColumnSearchBarChange} />
+
+        <FormGroup className={classes.formBody}>
+          {displayColumns.map(({ display, label, name, dataIndex }) => {
+            return (
               <FormControlLabel
-                key={index}
-                classes={{
-                  root: classes.formControl,
-                  label: classes.label,
-                }}
+                classes={{ label: classes.checkboxLabel }}
+                key={name}
                 control={
-                  <CheckboxComponent
+                  <Checkbox
                     color="primary"
-                    data-description="table-view-col"
                     className={classes.checkbox}
-                    classes={{
-                      root: classes.checkboxRoot,
-                      checked: classes.checked,
-                    }}
-                    onChange={() => handleColChange(index)}
-                    checked={column.display === 'true'}
-                    value={column.name}
+                    data-description="column display option"
+                    onChange={() => onCheck(dataIndex)}
+                    checked={display === 'true'}
+                    value={name}
                   />
                 }
-                label={column.label}
+                label={label}
               />
-            )
-          );
-        })}
-      </FormGroup>
-    </FormControl>
+            );
+          })}
+        </FormGroup>
+      </FormControl>
+    </div>
   );
-};
+}
 
 TableViewCol.propTypes = {
-  /** Columns used to describe table */
-  columns: PropTypes.array.isRequired,
-  /** Options used to describe table */
-  options: PropTypes.object.isRequired,
-  /** Callback to trigger View column update */
+  columns: PropTypes.array,
   onColumnUpdate: PropTypes.func,
-  /** Extend the style applied to components */
-  classes: PropTypes.object,
+  options: PropTypes.object,
 };
-
-export default TableViewCol;
