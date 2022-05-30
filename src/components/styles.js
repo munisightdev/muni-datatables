@@ -1,17 +1,20 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export const columnSelectionStyles = makeStyles(theme => ({
-  popoverBody: {
-    padding: theme.spacing(2),
-  },
-  formBody: {
-    marginTop: theme.spacing(0.5),
-  },
+  root: { padding: '16px 24px 16px 24px', fontFamily: 'Roboto' },
   title: {
+    marginLeft: '-7px',
+    marginRight: '24px',
+    fontSize: '14px',
     color: theme.palette.text.secondary,
+    textAlign: 'left',
     fontWeight: 500,
     lineHeight: '200%',
   },
+  formGroup: {
+    marginTop: '8px',
+  },
+
   checkbox: {
     height: 35,
   },

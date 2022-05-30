@@ -11,10 +11,14 @@ function parseColumns(columns) {
   }, []);
 }
 
-export default function TableViewCol({ columns, onColumnUpdate, options }) {
-  const defaultColumns = useMemo(() => parseColumns(columns), []);
+export default function TableViewCol({ columns, onColumnUpdate, components, options }) {
+  const defaultColumns = useMemo(() => parseColumns(columns), [columns]);
   const [displayColumns, setDisplayColumns] = useState(defaultColumns);
   const classes = getStyles();
+
+  const textLabels = options.textLabels.viewColumns;
+  const showSearch = options.viewColumnsSearch || false;
+  const CheckboxComponent = components.Checkbox || Checkbox;
 
   const handleColumnSearchBarChange = (value, previous) => {
     // if the input is the same or builds on top of the previous we can just search inside the same dataset
@@ -41,42 +45,54 @@ export default function TableViewCol({ columns, onColumnUpdate, options }) {
     onColumnUpdate(index);
   };
 
-  return (
-    <div className={classes.popoverBody}>
-      <FormControl component="fieldset" aria-label="view columns dialog title">
-        <Typography variant="overline" className={classes.title}>
-          {options.textLabels.viewColumns.title}
-        </Typography>
-        <TableViewColSearchBar setSearchBarText={handleColumnSearchBarChange} />
+  const handleClearSearchBar = () => {
+    setDisplayColumns(defaultColumns);
+  };
 
-        <FormGroup className={classes.formBody}>
-          {displayColumns.map(({ display, label, name, dataIndex }) => {
-            return (
-              <FormControlLabel
-                classes={{ label: classes.checkboxLabel }}
-                key={name}
-                control={
-                  <Checkbox
-                    color="primary"
-                    className={classes.checkbox}
-                    data-description="column display option"
-                    onChange={() => onCheck(dataIndex)}
-                    checked={display === 'true'}
-                    value={name}
-                  />
-                }
-                label={label}
-              />
-            );
-          })}
-        </FormGroup>
-      </FormControl>
-    </div>
+  return (
+    <FormControl className={classes.root} component="fieldset" aria-label="view columns dialog title">
+      <Typography variant="overline" className={classes.title}>
+        {textLabels.title}
+      </Typography>
+      {showSearch && (
+        <TableViewColSearchBar
+          handleSearchBarChange={handleColumnSearchBarChange}
+          handleClearSearchBar={handleClearSearchBar}
+        />
+      )}
+
+      <FormGroup className={classes.formGroup}>
+        {displayColumns.map(({ display, label, name, dataIndex }) => {
+          return (
+            <FormControlLabel
+              classes={{ label: classes.checkboxLabel }}
+              key={name}
+              control={
+                <CheckboxComponent
+                  color="primary"
+                  className={classes.checkbox}
+                  data-description="column display option"
+                  onChange={() => onCheck(dataIndex)}
+                  checked={display === 'true'}
+                  value={name}
+                />
+              }
+              label={label}
+            />
+          );
+        })}
+      </FormGroup>
+    </FormControl>
   );
 }
 
 TableViewCol.propTypes = {
-  columns: PropTypes.array,
+  /** Columns used to describe table */
+  columns: PropTypes.array.isRequired,
+  /** Options used to describe table */
+  options: PropTypes.object.isRequired,
+  /** Callback to trigger View column update */
   onColumnUpdate: PropTypes.func,
-  options: PropTypes.object,
+  /** Extend the style applied to components */
+  classes: PropTypes.object,
 };

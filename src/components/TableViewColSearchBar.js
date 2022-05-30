@@ -5,13 +5,18 @@ import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 import { columnSearchBarStyles as getStyles } from './styles';
 
-export default function TableViewColSearchBar({ setSearchBarText }) {
+export default function TableViewColSearchBar({ handleSearchBarChange, handleClearSearchBar }) {
   const classes = getStyles();
   const [value, setValue] = useState('');
 
   const onSearchBarUpdate = (e = '') => {
-    setSearchBarText(e.target.value, value);
+    handleSearchBarChange(e.target.value, value);
     setValue(e.target.value);
+  };
+
+  const onClearSearchBar = () => {
+    handleClearSearchBar();
+    setValue('');
   };
 
   return (
@@ -30,7 +35,7 @@ export default function TableViewColSearchBar({ setSearchBarText }) {
             <InputAdornment position="end" className={classes.searchClearAdornment}>
               <ClearIcon
                 className={classes.searchAdornment}
-                onClick={() => onSearchBarUpdate()}
+                onClick={onClearSearchBar}
                 aria-label="clear search bar icon"
                 edge="end"
               />
@@ -43,5 +48,6 @@ export default function TableViewColSearchBar({ setSearchBarText }) {
 }
 
 TableViewColSearchBar.propTypes = {
-  setSearchBarText: PropTypes.func,
+  handleSearchBarChange: PropTypes.func,
+  handleClearSearchBar: PropTypes.func,
 };

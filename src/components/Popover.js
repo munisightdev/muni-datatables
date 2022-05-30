@@ -52,7 +52,7 @@ const Popover = ({ className, trigger, refExit, hide, content, ...providedProps 
       handleClick(event);
     },
   };
-  
+
   return (
     <>
       <span {...triggerProps}>{trigger}</span>
@@ -64,14 +64,12 @@ const Popover = ({ className, trigger, refExit, hide, content, ...providedProps 
         anchorEl={anchorEl.current}
         anchorOrigin={anchorOriginSpecs}
         transformOrigin={transformOriginSpecs}
-        {...providedProps}
-      >
+        {...providedProps}>
         <IconButton
           aria-label="Close"
           onClick={handleRequestClose}
           className={closeIconClass}
-          style={{ position: 'absolute', right: '4px', top: '4px', zIndex: '1000' }}
-        >
+          style={{ position: 'absolute', right: '4px', top: '4px', zIndex: '1000' }}>
           <CloseIcon />
         </IconButton>
         {content}
