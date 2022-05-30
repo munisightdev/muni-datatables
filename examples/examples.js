@@ -1,7 +1,7 @@
 import ArrayValueColumns from './array-value-columns';
 import ColumnFilters from './column-filters';
 import ColumnOptionsUpdate from './column-options-update';
-import ColumnSort from "./column-sort";
+import ColumnSort from './column-sort';
 import Component from './component';
 import CSVExport from './csv-export';
 import CustomActionColumns from './custom-action-columns';
@@ -31,6 +31,7 @@ import ServerSideSorting from './serverside-sorting';
 import Simple from './simple';
 import SimpleNoToolbar from './simple-no-toolbar';
 import TextLocalization from './text-localization';
+import TableViewColSearch from './table-view-col-search';
 import CustomComponents from './custom-components';
 import InfiniteScrolling from './infinite-scrolling';
 import Themes from './themes';
@@ -76,5 +77,6 @@ export default {
   'Simple No Toolbar': SimpleNoToolbar,
   'Text Localization': TextLocalization,
   'Custom Components': CustomComponents,
+  'View Columns With Search Bar': TableViewColSearch,
   Themes: Themes,
 };

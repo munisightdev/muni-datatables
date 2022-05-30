@@ -131,6 +131,7 @@ class MUIDataTable extends React.Component {
             searchable: PropTypes.bool,
             download: PropTypes.bool,
             viewColumns: PropTypes.bool,
+            viewColumnsSearch: PropTypes.bool,
             filterList: PropTypes.array,
             filterOptions: PropTypes.oneOfType([
               PropTypes.array,
@@ -426,6 +427,7 @@ class MUIDataTable extends React.Component {
     sortOrder: {},
     textLabels: getTextLabels(),
     viewColumns: true,
+    viewColumnsSearch: false,
     selectToolbarPlacement: STP.REPLACE,
   });
 
