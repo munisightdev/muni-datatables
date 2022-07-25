@@ -11,7 +11,7 @@ function parseColumns(columns) {
   }, []);
 }
 
-export default function TableViewCol({ columns, onColumnUpdate, components, options }) {
+export default function TableViewCol({ columns, groupColumns, onColumnUpdate, components, options }) {
   const defaultColumns = useMemo(() => parseColumns(columns), [columns]);
   const [displayColumns, setDisplayColumns] = useState(defaultColumns);
   const classes = getStyles();
@@ -62,8 +62,8 @@ export default function TableViewCol({ columns, onColumnUpdate, components, opti
       )}
 
       <FormGroup className={classes.formGroup}>
-        {props.groupColumns
-          ? props.columns.map(group => {
+        {groupColumns
+          ? columns.map(group => {
               return [
                 group.groupItems.length > 0 && <ListSubheader disableSticky>{group.groupName}</ListSubheader>,
                 group.groupItems.reduce((acc, item) => {
