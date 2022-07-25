@@ -62,25 +62,61 @@ export default function TableViewCol({ columns, onColumnUpdate, components, opti
       )}
 
       <FormGroup className={classes.formGroup}>
-        {displayColumns.map(({ display, label, name, dataIndex }) => {
-          return (
-            <FormControlLabel
-              classes={{ label: classes.checkboxLabel }}
-              key={name}
-              control={
-                <CheckboxComponent
-                  color="primary"
-                  className={classes.checkbox}
-                  data-description="column display option"
-                  onChange={() => onCheck(dataIndex)}
-                  checked={display === 'true'}
-                  value={name}
+        {props.groupColumns
+          ? props.columns.map(group => {
+              return [
+                group.groupItems.length > 0 && <ListSubheader disableSticky>{group.groupName}</ListSubheader>,
+                group.groupItems.reduce((acc, item) => {
+                  if (column.display === 'excluded' || column.viewColumns === false) {
+                    return acc;
+                  }
+                  return [
+                    ...acc,
+                    <FormControlLabel
+                      key={index}
+                      classes={{
+                        root: classes.formControl,
+                        label: classes.label,
+                      }}
+                      control={
+                        <CheckboxComponent
+                          color="primary"
+                          data-description="table-view-col"
+                          className={classes.checkbox}
+                          classes={{
+                            root: classes.checkboxRoot,
+                            checked: classes.checked,
+                          }}
+                          onChange={() => handleColChange(index)}
+                          checked={column.display === 'true'}
+                          value={column.name}
+                        />
+                      }
+                      label={column.label}
+                    />,
+                  ];
+                }, []),
+              ];
+            })
+          : displayColumns.map(({ display, label, name, dataIndex }) => {
+              return (
+                <FormControlLabel
+                  classes={{ label: classes.checkboxLabel }}
+                  key={name}
+                  control={
+                    <CheckboxComponent
+                      color="primary"
+                      className={classes.checkbox}
+                      data-description="column display option"
+                      onChange={() => onCheck(dataIndex)}
+                      checked={display === 'true'}
+                      value={name}
+                    />
+                  }
+                  label={label}
                 />
-              }
-              label={label}
-            />
-          );
-        })}
+              );
+            })}
       </FormGroup>
     </FormControl>
   );
@@ -89,6 +125,8 @@ export default function TableViewCol({ columns, onColumnUpdate, components, opti
 TableViewCol.propTypes = {
   /** Columns used to describe table */
   columns: PropTypes.array.isRequired,
+  /** Specify if columns are to be grouped */
+  groupColumns: PropTypes.bool,
   /** Options used to describe table */
   options: PropTypes.object.isRequired,
   /** Callback to trigger View column update */

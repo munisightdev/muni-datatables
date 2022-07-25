@@ -289,6 +289,7 @@ class TableToolbar extends React.Component {
       options,
       classes,
       columns,
+      groupedColumns,
       filterData,
       filterList,
       filterUpdate,
@@ -420,7 +421,8 @@ class TableToolbar extends React.Component {
               content={
                 <TableViewColComponent
                   data={data}
-                  columns={columns}
+                  columns={groupedColumns || columns}
+                  groupColumns={groupedColumns?.length > 0}
                   options={options}
                   onColumnUpdate={toggleViewColumn}
                   updateColumns={updateColumns}

@@ -115,6 +115,8 @@ class MUIDataTable extends React.Component {
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
     /** Data used to describe table */
     data: PropTypes.array.isRequired,
+    /** Column data separated into groups */
+    groupedColumns: PropTypes.array,
     /** Columns used to describe table */
     columns: PropTypes.PropTypes.arrayOf(
       PropTypes.oneOfType([
@@ -986,8 +988,8 @@ class MUIDataTable extends React.Component {
           typeof funcResult === 'string' || !funcResult
             ? funcResult
             : funcResult.props && funcResult.props.value
-            ? funcResult.props.value
-            : columnValue;
+              ? funcResult.props.value
+              : columnValue;
 
         displayRow.push(columnDisplay);
       } else {
@@ -1537,13 +1539,7 @@ class MUIDataTable extends React.Component {
     const cleanRows = data.filter(({ index }) => !selectedMap[index]);
 
     if (this.options.onRowsDelete) {
-      if (
-        this.options.onRowsDelete(
-          selectedRows,
-          cleanRows.map(ii => ii.data),
-        ) === false
-      )
-        return;
+      if (this.options.onRowsDelete(selectedRows, cleanRows.map(ii => ii.data)) === false) return;
     }
 
     this.setTableData(
@@ -1933,16 +1929,17 @@ class MUIDataTable extends React.Component {
 
     return (
       <Paper elevation={this.options.elevation} ref={this.tableContent} className={paperClasses}>
-        {selectedRows.data.length > 0 && this.options.selectToolbarPlacement !== STP.NONE && (
-          <TableToolbarSelectComponent
-            options={this.options}
-            selectedRows={selectedRows}
-            onRowsDelete={this.selectRowDelete}
-            displayData={displayData}
-            selectRowUpdate={this.selectRowUpdate}
-            components={this.props.components}
-          />
-        )}
+        {selectedRows.data.length > 0 &&
+          this.options.selectToolbarPlacement !== STP.NONE && (
+            <TableToolbarSelectComponent
+              options={this.options}
+              selectedRows={selectedRows}
+              onRowsDelete={this.selectRowDelete}
+              displayData={displayData}
+              selectRowUpdate={this.selectRowUpdate}
+              components={this.props.components}
+            />
+          )}
         {(selectedRows.data.length === 0 ||
           [STP.ABOVE, STP.NONE].indexOf(this.options.selectToolbarPlacement) !== -1) &&
           showToolbar && (
