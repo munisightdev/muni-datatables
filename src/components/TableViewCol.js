@@ -73,21 +73,14 @@ export default function TableViewCol({ columns, onColumnUpdate, components, opti
                   return [
                     ...acc,
                     <FormControlLabel
-                      key={index}
-                      classes={{
-                        root: classes.formControl,
-                        label: classes.label,
-                      }}
+                      classes={{ label: classes.checkboxLabel }}
+                      key={column.name}
                       control={
                         <CheckboxComponent
                           color="primary"
-                          data-description="table-view-col"
                           className={classes.checkbox}
-                          classes={{
-                            root: classes.checkboxRoot,
-                            checked: classes.checked,
-                          }}
-                          onChange={() => handleColChange(index)}
+                          data-description="column display option"
+                          onChange={() => onCheck(column.dataIndex)}
                           checked={column.display === 'true'}
                           value={column.name}
                         />
