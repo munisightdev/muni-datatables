@@ -1945,6 +1945,7 @@ class MUIDataTable extends React.Component {
           showToolbar && (
             <TableToolbarComponent
               columns={columns}
+              groupedColumns={groupedColumns}
               columnOrder={columnOrder}
               displayData={displayData}
               data={data}
