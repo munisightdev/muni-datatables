@@ -1840,6 +1840,7 @@ class MUIDataTable extends React.Component {
       data,
       displayData,
       columns,
+      groupedColumns,
       page,
       filterData,
       filterList,
