@@ -262,6 +262,7 @@ class MUIDataTable extends React.Component {
     options: {},
     data: [],
     columns: [],
+    groupedColumns: [],
     components: {
       TableBody: DefaultTableBody,
       TableFilter: DefaultTableFilter,
