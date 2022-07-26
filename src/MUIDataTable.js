@@ -300,6 +300,7 @@ class MUIDataTable extends React.Component {
       displayData: [],
       filterData: [],
       filterList: [],
+      groupedColumns: [],
       page: 0,
       previousSelectedRow: null,
       rowsPerPage: 10,
