@@ -917,6 +917,7 @@ class MUIDataTable extends React.Component {
     /* set source data and display Data set source set */
     let stateUpdates = {
       columns: columns,
+      groupedColumns: groupedColumns,
       filterData: filterData,
       filterList: filterList,
       searchText: searchText,
