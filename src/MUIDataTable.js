@@ -709,6 +709,7 @@ class MUIDataTable extends React.Component {
       this.state.columns,
       this.options.columnOrder,
       this.state.columnOrder,
+      this.state.groupedColumns,
     );
 
     let sortIndex = null;
@@ -1235,6 +1236,7 @@ class MUIDataTable extends React.Component {
     this.setState(
       prevState => {
         let columns = cloneDeep(prevState.columns);
+        let groupedColumns = cloneDeep(prevState.groupedColumns);
         let data = prevState.data;
         let newOrder = columns[index].sortDescFirst ? 'desc' : 'asc'; // default
 
@@ -1265,6 +1267,7 @@ class MUIDataTable extends React.Component {
 
         let newState = {
           columns: columns,
+          groupedColumns: groupedColumns,
           announceText: announceText,
           activeColumn: index,
         };
