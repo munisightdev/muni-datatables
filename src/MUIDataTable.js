@@ -677,7 +677,7 @@ class MUIDataTable extends React.Component {
       columnOrder = prevColumnOrder;
     }
 
-    return { columns: columnData, filterData, filterList, columnOrder, groupedColumns: this.state.groupedColumns };
+    return { columns: columnData, filterData, filterList, columnOrder, groupedColumns: this.props.groupedColumns };
   };
 
   transformData = (columns, data) => {
