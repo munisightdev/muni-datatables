@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { FormControl, Typography, FormGroup, Checkbox, FormControlLabel } from '@material-ui/core';
+import { FormControl, Typography, FormGroup, Checkbox, FormControlLabel, ListSubheader } from '@material-ui/core';
 import { columnSelectionStyles as getStyles } from './styles';
 import TableViewColSearchBar from './TableViewColSearchBar';
 
