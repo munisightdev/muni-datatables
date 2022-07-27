@@ -67,7 +67,7 @@ export default function TableViewCol({ columns, groupColumns, onColumnUpdate, co
               return [
                 group.groupItems.length > 0 && <ListSubheader disableSticky>{group.groupName}</ListSubheader>,
                 group.groupItems.reduce((acc, cur) => {
-                  if (cur.display === 'excluded' || cur.viewColumns === false) {
+                  if (cur.options.display === 'excluded' || cur.viewColumns === false) {
                     return acc;
                   }
                   return [
@@ -81,7 +81,7 @@ export default function TableViewCol({ columns, groupColumns, onColumnUpdate, co
                           className={classes.checkbox}
                           data-description="column display option"
                           onChange={() => onCheck(cur.dataIndex)}
-                          checked={cur.display === 'true'}
+                          checked={cur.options.display === 'true'}
                           value={cur.name}
                         />
                       }
