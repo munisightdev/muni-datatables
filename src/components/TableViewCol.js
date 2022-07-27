@@ -66,26 +66,26 @@ export default function TableViewCol({ columns, groupColumns, onColumnUpdate, co
           ? columns.map(group => {
               return [
                 group.groupItems.length > 0 && <ListSubheader disableSticky>{group.groupName}</ListSubheader>,
-                group.groupItems.reduce((acc, item) => {
-                  if (column.display === 'excluded' || column.viewColumns === false) {
+                group.groupItems.reduce((acc, cur) => {
+                  if (cur.display === 'excluded' || cur.viewColumns === false) {
                     return acc;
                   }
                   return [
                     ...acc,
                     <FormControlLabel
                       classes={{ label: classes.checkboxLabel }}
-                      key={column.name}
+                      key={cur.name}
                       control={
                         <CheckboxComponent
                           color="primary"
                           className={classes.checkbox}
                           data-description="column display option"
-                          onChange={() => onCheck(column.dataIndex)}
-                          checked={column.display === 'true'}
-                          value={column.name}
+                          onChange={() => onCheck(cur.dataIndex)}
+                          checked={cur.display === 'true'}
+                          value={cur.name}
                         />
                       }
-                      label={column.label}
+                      label={cur.label}
                     />,
                   ];
                 }, []),
