@@ -11,7 +11,7 @@ function parseColumns(columns) {
   }, []);
 }
 
-export default function TableViewCol({ columns, groupColumns, onColumnUpdate, components, options }) {
+export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, components, options }) {
   const defaultColumns = useMemo(() => parseColumns(columns), [columns]);
   const [displayColumns, setDisplayColumns] = useState(defaultColumns);
   const classes = getStyles();
@@ -62,8 +62,8 @@ export default function TableViewCol({ columns, groupColumns, onColumnUpdate, co
       )}
 
       <FormGroup className={classes.formGroup}>
-        {groupColumns
-          ? columns.map(group => {
+        {groupedColumns?.length > 0
+          ? groupedColumns.map(group => {
               return [
                 group.groupItems.length > 0 && <ListSubheader disableSticky>{group.groupName}</ListSubheader>,
                 group.groupItems.reduce((acc, cur) => {
@@ -80,7 +80,7 @@ export default function TableViewCol({ columns, groupColumns, onColumnUpdate, co
                           color="primary"
                           className={classes.checkbox}
                           data-description="column display option"
-                          onChange={() => onCheck(cur.dataIndex)}
+                          onChange={() => onCheck(cur.group.groupName)}
                           checked={cur.options.display === 'true'}
                           value={cur.name}
                         />
@@ -119,7 +119,7 @@ TableViewCol.propTypes = {
   /** Columns used to describe table */
   columns: PropTypes.array.isRequired,
   /** Specify if columns are to be grouped */
-  groupColumns: PropTypes.bool,
+  groupedColumns: PropTypes.array,
   /** Options used to describe table */
   options: PropTypes.object.isRequired,
   /** Callback to trigger View column update */

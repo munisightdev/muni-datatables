@@ -21,6 +21,9 @@ export const columnSelectionStyles = makeStyles(theme => ({
   checkboxLabel: {
     fontSize: '15px',
   },
+  listSubheader: {
+    marginLeft: '0px',
+  },
 }));
 
 export const columnSearchBarStyles = makeStyles(theme => ({

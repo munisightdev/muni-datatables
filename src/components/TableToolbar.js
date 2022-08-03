@@ -421,8 +421,8 @@ class TableToolbar extends React.Component {
               content={
                 <TableViewColComponent
                   data={data}
-                  columns={groupedColumns?.length > 0 ? groupedColumns : columns}
-                  groupColumns={groupedColumns?.length > 0}
+                  columns={columns}
+                  groupedColumns={groupedColumns}
                   options={options}
                   onColumnUpdate={toggleViewColumn}
                   updateColumns={updateColumns}
