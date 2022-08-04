@@ -55,7 +55,7 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
         return c;
       }),
     ]);
-    onColumnUpdate(index);
+    onColumnUpdate(displayColumns.find(column => column.name === name).dataIndex);
   };
 
   const handleClearSearchBar = () => {
@@ -78,7 +78,11 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
         {groupedColumns?.length > 0
           ? groupedColumns.map(group => {
               return [
-                group.groupItems.length > 0 && <ListSubheader disableSticky>{group.groupName}</ListSubheader>,
+                group.groupItems.length > 0 && (
+                  <ListSubheader disableSticky className={classes.listSubheader}>
+                    {group.groupName}
+                  </ListSubheader>
+                ),
                 group.groupItems.reduce((acc, cur) => {
                   if (
                     !displayColumns.some(column => column.name === cur.name) ||
