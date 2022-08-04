@@ -1192,27 +1192,6 @@ class MUIDataTable extends React.Component {
     );
   };
 
-  //toggleGroupedViewColumn = name => {
-  //  this.setState(
-  //    prevState => {
-  //      const columns = cloneDeep(prevState.columns);
-  //      const column = columns.some(column => column.name === name);
-  //      column.display = column.display === 'true' ? 'false' : 'true';
-  //      return {
-  //        columns: [...columns, column],
-  //      };
-  //    },
-  //    () => {
-  //      this.setTableAction('viewColumnsChange');
-  //      var cb = this.options.onViewColumnsChange || this.options.onColumnViewChange;
-
-  //      if (cb) {
-  //        cb(this.state.columns[index].name, this.state.columns[index].display === 'true' ? 'add' : 'remove');
-  //      }
-  //    },
-  //  );
-  //};
-
   updateColumns = newColumns => {
     this.setState(
       prevState => {

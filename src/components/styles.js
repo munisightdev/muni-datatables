@@ -22,7 +22,7 @@ export const columnSelectionStyles = makeStyles(theme => ({
     fontSize: '15px',
   },
   listSubheader: {
-    marginLeft: '0px',
+    marginLeft: '-15px',
   },
 }));
 
