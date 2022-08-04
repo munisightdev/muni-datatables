@@ -45,6 +45,19 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
     onColumnUpdate(index);
   };
 
+  const onCheckGrouped = name => {
+    setDisplayColumns([
+      ...displayColumns.map(c => {
+        if (c.name === name) {
+          const tmp = c;
+          tmp.display = c.display === 'true' ? 'false' : 'true';
+        }
+        return c;
+      }),
+    ]);
+    onColumnUpdate(index);
+  };
+
   const handleClearSearchBar = () => {
     setDisplayColumns(defaultColumns);
   };
@@ -67,7 +80,11 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
               return [
                 group.groupItems.length > 0 && <ListSubheader disableSticky>{group.groupName}</ListSubheader>,
                 group.groupItems.reduce((acc, cur) => {
-                  if (cur.options.display === 'excluded' || cur.viewColumns === false) {
+                  if (
+                    !displayColumns.some(column => column.name === cur.name) ||
+                    cur.options.display === 'excluded' ||
+                    cur.viewColumns === false
+                  ) {
                     return acc;
                   }
                   return [
@@ -80,7 +97,7 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
                           color="primary"
                           className={classes.checkbox}
                           data-description="column display option"
-                          onChange={() => onCheck(cur.group.groupName)}
+                          onChange={() => onCheckGrouped(cur.name)}
                           checked={cur.options.display === 'true'}
                           value={cur.name}
                         />
