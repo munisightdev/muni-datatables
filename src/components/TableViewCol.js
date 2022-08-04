@@ -102,7 +102,7 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
                           className={classes.checkbox}
                           data-description="column display option"
                           onChange={() => onCheckGrouped(cur.name)}
-                          checked={cur.options.display === 'true'}
+                          checked={displayColumns.find(column => column.name === cur.name).display === 'true'}
                           value={cur.name}
                         />
                       }
