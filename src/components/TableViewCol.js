@@ -14,7 +14,7 @@ function parseGroupedColumns(groupedColumns /*, displayColumns*/) {
   const index = 0;
   return groupedColumns.reduce((acc, cur) => {
     const header = { name: cur.groupName, type: 'header' };
-    const columns = groupItems.reduce((acc1, cur1) => {
+    const columns = cur.groupItems.reduce((acc1, cur1) => {
       if (
         // !displayColumns.some(column => column.name === cur1.name) ||
         cur1.options.display === 'excluded' ||
