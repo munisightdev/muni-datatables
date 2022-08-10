@@ -11,7 +11,7 @@ function parseColumns(columns) {
   }, []);
 }
 function parseGroupedColumns(groupedColumns /*, displayColumns*/) {
-  const index = 0;
+  let index = 0;
   return groupedColumns.reduce((acc, cur) => {
     const header = { name: cur.groupName, type: 'header' };
     const columns = cur.groupItems.reduce((acc1, cur1) => {
