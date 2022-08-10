@@ -10,9 +10,29 @@ function parseColumns(columns) {
     return acc;
   }, []);
 }
+function parseGroupedColumns(groupedColumns /*, displayColumns*/) {
+  const index = 0;
+  return groupedColumns.reduce((acc, cur) => {
+    const header = { name: cur.groupName, type: 'header' };
+    const columns = groupItems.reduce((acc1, cur1) => {
+      if (
+        // !displayColumns.some(column => column.name === cur1.name) ||
+        cur1.options.display === 'excluded' ||
+        cur1.viewColumns === false
+      ) {
+        return acc1;
+      }
+      return { ...cur, type: 'column', dataIndex: index++ };
+    }, []);
+    return columns.length > 0 ? [...acc, header, ...columns] : acc;
+  });
+}
 
 export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, components, options }) {
-  const defaultColumns = useMemo(() => parseColumns(columns), [columns]);
+  const defaultColumns =
+    groupedColumns.length > 0
+      ? useMemo(() => parseGroupedColumns(groupedColumns), [groupedColumns])
+      : useMemo(() => parseColumns(columns), [columns]);
   const [displayColumns, setDisplayColumns] = useState(defaultColumns);
   const classes = getStyles();
 
@@ -26,35 +46,39 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
     const searchValue = value.toLowerCase();
     setDisplayColumns(
       dataSet.reduce((acc, cur) => {
-        if (cur.label.toLowerCase().includes(searchValue)) acc.push(cur);
+        if (cur.type === 'column' && cur.label.toLowerCase().includes(searchValue)) acc.push(cur);
         return acc;
       }, []),
     );
   };
 
   const onCheck = index => {
-    setDisplayColumns([
-      ...displayColumns.map(c => {
-        if (c.dataIndex === index) {
-          const tmp = c;
-          tmp.display = c.display === 'true' ? 'false' : 'true';
-        }
-        return c;
-      }),
-    ]);
+    setDisplayColumns(prev => {
+      [
+        ...prev.map(c => {
+          if (c.dataIndex === index) {
+            const tmp = c;
+            tmp.display = c.display === 'true' ? 'false' : 'true';
+          }
+          return c;
+        }),
+      ];
+    });
     onColumnUpdate(index);
   };
 
   const onCheckGrouped = name => {
-    setDisplayColumns([
-      ...displayColumns.map(c => {
-        if (c.name === name) {
-          const tmp = c;
-          tmp.display = c.display === 'true' ? 'false' : 'true';
-        }
-        return c;
-      }),
-    ]);
+    setDisplayColumns(prev => {
+      [
+        ...prev.map(c => {
+          if (c.name === name) {
+            const tmp = c;
+            tmp.display = c.display === 'true' ? 'false' : 'true';
+          }
+          return c;
+        }),
+      ];
+    });
     onColumnUpdate(displayColumns.find(column => column.name === name).dataIndex);
   };
 
@@ -75,62 +99,86 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
       )}
 
       <FormGroup className={classes.formGroup}>
-        {groupedColumns?.length > 0
-          ? groupedColumns.map(group => {
-              return [
-                group.groupItems.length > 0 && (
-                  <ListSubheader disableSticky className={classes.listSubheader}>
-                    {group.groupName}
-                  </ListSubheader>
-                ),
-                group.groupItems.reduce((acc, cur) => {
-                  if (
-                    !displayColumns.some(column => column.name === cur.name) ||
-                    cur.options.display === 'excluded' ||
-                    cur.viewColumns === false
-                  ) {
-                    return acc;
-                  }
-                  return [
-                    ...acc,
-                    <FormControlLabel
-                      classes={{ label: classes.checkboxLabel }}
-                      key={cur.name}
-                      control={
-                        <CheckboxComponent
-                          color="primary"
-                          className={classes.checkbox}
-                          data-description="column display option"
-                          onChange={() => onCheckGrouped(cur.name)}
-                          checked={displayColumns.find(column => column.name === cur.name).display === 'true'}
-                          value={cur.name}
-                        />
-                      }
-                      label={cur.label}
-                    />,
-                  ];
-                }, []),
-              ];
-            })
-          : displayColumns.map(({ display, label, name, dataIndex }) => {
-              return (
-                <FormControlLabel
-                  classes={{ label: classes.checkboxLabel }}
-                  key={name}
-                  control={
-                    <CheckboxComponent
-                      color="primary"
-                      className={classes.checkbox}
-                      data-description="column display option"
-                      onChange={() => onCheck(dataIndex)}
-                      checked={display === 'true'}
-                      value={name}
-                    />
-                  }
-                  label={label}
+        {displayColumns.map(({ display, label, name, dataIndex, type = 'column' }) => {
+          return type === 'header' ? (
+            <ListSubheader disableSticky className={classes.listSubheader}>
+              {name}
+            </ListSubheader>
+          ) : (
+            <FormControlLabel
+              classes={{ label: classes.checkboxLabel }}
+              key={name}
+              control={
+                <CheckboxComponent
+                  color="primary"
+                  className={classes.checkbox}
+                  data-description="column display option"
+                  onChange={() => onCheck(dataIndex)}
+                  checked={display === 'true'}
+                  value={name}
                 />
-              );
-            })}
+              }
+              label={label}
+            />
+          );
+        })}
+
+        {/*{groupedColumns?.length > 0*/}
+        {/*  ? groupedColumns.map(group => {*/}
+        {/*      return [*/}
+        {/*        group.groupItems.length > 0 && (*/}
+        {/*          <ListSubheader disableSticky className={classes.listSubheader}>*/}
+        {/*            {group.groupName}*/}
+        {/*          </ListSubheader>*/}
+        {/*        ),*/}
+        {/*        group.groupItems.reduce((acc, cur) => {*/}
+        {/*          if (*/}
+        {/*            !displayColumns.some(column => column.name === cur.name) ||*/}
+        {/*            cur.options.display === 'excluded' ||*/}
+        {/*            cur.viewColumns === false*/}
+        {/*          ) {*/}
+        {/*            return acc;*/}
+        {/*          }*/}
+        {/*          return [*/}
+        {/*            ...acc,*/}
+        {/*            <FormControlLabel*/}
+        {/*              classes={{ label: classes.checkboxLabel }}*/}
+        {/*              key={cur.name}*/}
+        {/*              control={*/}
+        {/*                <CheckboxComponent*/}
+        {/*                  color="primary"*/}
+        {/*                  className={classes.checkbox}*/}
+        {/*                  data-description="column display option"*/}
+        {/*                  onChange={() => onCheckGrouped(cur.name)}*/}
+        {/*                  checked={displayColumns.find(column => column.name === cur.name).display === 'true'}*/}
+        {/*                  value={cur.name}*/}
+        {/*                />*/}
+        {/*              }*/}
+        {/*              label={cur.label}*/}
+        {/*            />,*/}
+        {/*          ];*/}
+        {/*        }, []),*/}
+        {/*      ];*/}
+        {/*    })*/}
+        {/*  : displayColumns.map(({ display, label, name, dataIndex }) => {*/}
+        {/*      return (*/}
+        {/*        <FormControlLabel*/}
+        {/*          classes={{ label: classes.checkboxLabel }}*/}
+        {/*          key={name}*/}
+        {/*          control={*/}
+        {/*            <CheckboxComponent*/}
+        {/*              color="primary"*/}
+        {/*              className={classes.checkbox}*/}
+        {/*              data-description="column display option"*/}
+        {/*              onChange={() => onCheck(dataIndex)}*/}
+        {/*              checked={display === 'true'}*/}
+        {/*              value={name}*/}
+        {/*            />*/}
+        {/*          }*/}
+        {/*          label={label}*/}
+        {/*        />*/}
+        {/*      );*/}
+        {/*  })}*/}
       </FormGroup>
     </FormControl>
   );
