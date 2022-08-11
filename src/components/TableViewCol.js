@@ -20,10 +20,8 @@ function parseGroupedColumns(groupedColumns) {
       }
       return [...acc1, { ...cur1, type: 'column', dataIndex: index++ }];
     }, []);
-    console.log('columns', columns);
     return columns.length > 0 ? [...acc, header, ...columns] : acc;
   }, []);
-  console.log('groupedDisplayColumns', parsedColumns);
   return parsedColumns;
 }
 
@@ -52,17 +50,15 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
   };
 
   const onCheck = index => {
-    setDisplayColumns(prev => {
-      [
-        ...prev.map(c => {
-          if (c.dataIndex === index) {
-            const tmp = c;
-            tmp.display = c.display === 'true' ? 'false' : 'true';
-          }
-          return c;
-        }),
-      ];
-    });
+    setDisplayColumns(prev => [
+      ...prev.map(c => {
+        if (c.dataIndex === index) {
+          const tmp = c;
+          tmp.display = c.display === 'true' ? 'false' : 'true';
+        }
+        return c;
+      }),
+    ]);
     onColumnUpdate(index);
   };
 
