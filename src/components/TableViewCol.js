@@ -12,17 +12,16 @@ function parseColumns(columns) {
 }
 function parseGroupedColumns(groupedColumns) {
   let index = 0;
-  const parsedColumns = groupedColumns.reduce((acc, cur) => {
+  return groupedColumns.reduce((acc, cur) => {
     const header = { name: cur.groupName, type: 'header' };
     const columns = cur.groupItems.reduce((acc1, cur1) => {
       if (cur1.options.display === 'excluded' || cur1.viewColumns === false) {
         return acc1;
       }
-      return [...acc1, { ...cur1, type: 'column', dataIndex: index++ }];
+      return [...acc1, { ...cur1, type: 'column', dataIndex: index++, display: cur.options.display }];
     }, []);
     return columns.length > 0 ? [...acc, header, ...columns] : acc;
   }, []);
-  return parsedColumns;
 }
 
 export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, components, options }) {
@@ -43,7 +42,8 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
     const searchValue = value.toLowerCase();
     setDisplayColumns(
       dataSet.reduce((acc, cur) => {
-        if (cur.type === 'column' && cur.label.toLowerCase().includes(searchValue)) acc.push(cur);
+        if (cur.type === 'header' || (cur.type === 'column' && cur.label.toLowerCase().includes(searchValue)))
+          acc.push(cur);
         return acc;
       }, []),
     );
