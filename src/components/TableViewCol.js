@@ -18,21 +18,12 @@ function parseGroupedColumns(groupedColumns) {
       if (cur1.options.display === 'excluded' || cur1.viewColumns === false) {
         return acc1;
       }
-      return { ...cur, type: 'column', dataIndex: index++ };
+      return { ...cur1, type: 'column', dataIndex: index++ };
     }, []);
     return columns.length > 0 ? [...acc, header, ...columns] : acc;
-  });
+  }, []);
   console.log('groupedDisplayColumns', parsedColumns);
-  return groupedColumns.reduce((acc, cur) => {
-    const header = { name: cur.groupName, type: 'header' };
-    const columns = cur.groupItems.reduce((acc1, cur1) => {
-      if (cur1.options.display === 'excluded' || cur1.viewColumns === false) {
-        return acc1;
-      }
-      return { ...cur, type: 'column', dataIndex: index++ };
-    }, []);
-    return columns.length > 0 ? [...acc, header, ...columns] : acc;
-  });
+  return parsedColumns;
 }
 
 export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, components, options }) {
