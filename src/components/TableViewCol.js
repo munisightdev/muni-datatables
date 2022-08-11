@@ -60,7 +60,9 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
       }),
     ]);
     onColumnUpdate(
-      groupedColumns.length > 0 ? parseColumns(columns).find(column => column.name === name).dataIndex : index,
+      groupedColumns.length > 0
+        ? parseColumns(columns).find(column => column.name === displayColumns[dataIndex].name).dataIndex
+        : index,
     );
   };
 
