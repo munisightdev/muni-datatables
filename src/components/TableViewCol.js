@@ -49,7 +49,7 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
     );
   };
 
-  const onCheck = index => {
+  const onCheck = (index, name) => {
     setDisplayColumns(prev => [
       ...prev.map(c => {
         if (c.dataIndex === index) {
@@ -60,9 +60,7 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
       }),
     ]);
     onColumnUpdate(
-      groupedColumns.length > 0
-        ? parseColumns(columns).find(column => column.name === displayColumns[dataIndex].name).dataIndex
-        : index,
+      groupedColumns.length > 0 ? parseColumns(columns).find(column => column.name === name).dataIndex : index,
     );
   };
 
@@ -96,7 +94,7 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
                   color="primary"
                   className={classes.checkbox}
                   data-description="column display option"
-                  onChange={() => onCheck(dataIndex)}
+                  onChange={() => onCheck(dataIndex, name)}
                   checked={display === 'true'}
                   value={name}
                 />
