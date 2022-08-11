@@ -12,6 +12,17 @@ function parseColumns(columns) {
 }
 function parseGroupedColumns(groupedColumns) {
   let index = 0;
+  const parsedColumns = groupedColumns.reduce((acc, cur) => {
+    const header = { name: cur.groupName, type: 'header' };
+    const columns = cur.groupItems.reduce((acc1, cur1) => {
+      if (cur1.options.display === 'excluded' || cur1.viewColumns === false) {
+        return acc1;
+      }
+      return { ...cur, type: 'column', dataIndex: index++ };
+    }, []);
+    return columns.length > 0 ? [...acc, header, ...columns] : acc;
+  });
+  console.log('groupedDisplayColumns', parsedColumns);
   return groupedColumns.reduce((acc, cur) => {
     const header = { name: cur.groupName, type: 'header' };
     const columns = cur.groupItems.reduce((acc1, cur1) => {
@@ -79,7 +90,7 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
         />
       )}
       <FormGroup className={classes.formGroup}>
-        {displayColumns.map(({ display, label = '', name, dataIndex, type = 'column' }) => {
+        {displayColumns.map(({ display = false, label = '', name = '', dataIndex = null, type = 'column' }) => {
           return type === 'header' ? (
             <ListSubheader disableSticky className={classes.listSubheader}>
               {name}
