@@ -18,7 +18,7 @@ function parseGroupedColumns(groupedColumns) {
       if (cur1.options.display === 'excluded' || cur1.viewColumns === false) {
         return acc1;
       }
-      return [...acc1, { ...cur1, type: 'column', dataIndex: index++, display: cur.options.display }];
+      return [...acc1, { ...cur1, type: 'column', dataIndex: index++, display: cur1.options.display }];
     }, []);
     return columns.length > 0 ? [...acc, header, ...columns] : acc;
   }, []);
