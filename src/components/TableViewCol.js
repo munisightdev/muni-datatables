@@ -18,8 +18,9 @@ function parseGroupedColumns(groupedColumns) {
       if (cur1.options.display === 'excluded' || cur1.viewColumns === false) {
         return acc1;
       }
-      return { ...cur1, type: 'column', dataIndex: index++ };
+      return [...acc1, { ...cur1, type: 'column', dataIndex: index++ }];
     }, []);
+    console.log('columns', columns);
     return columns.length > 0 ? [...acc, header, ...columns] : acc;
   }, []);
   console.log('groupedDisplayColumns', parsedColumns);
@@ -81,7 +82,7 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
         />
       )}
       <FormGroup className={classes.formGroup}>
-        {displayColumns.map(({ display = false, label = '', name = '', dataIndex = null, type = 'column' }) => {
+        {displayColumns.map(({ display, label, name, dataIndex, type = 'column' }) => {
           return type === 'header' ? (
             <ListSubheader disableSticky className={classes.listSubheader}>
               {name}
