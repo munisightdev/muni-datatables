@@ -59,7 +59,9 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
         return c;
       }),
     ]);
-    onColumnUpdate(index);
+    onColumnUpdate(
+      groupedColumns.length > 0 ? parseColumns(columns).find(column => column.name === name).dataIndex : index,
+    );
   };
 
   const handleClearSearchBar = () => {
