@@ -40,16 +40,18 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
     // if the input is the same or builds on top of the previous we can just search inside the same dataset
     const dataSet = value.includes(previous) ? displayColumns : defaultColumns;
     const searchValue = value.toLowerCase();
-    setDisplayColumns(
-      dataSet.reduce((acc, cur) => {
-        if (cur.type === 'header' && acc.length > 0 && acc.slice(-1)[0]?.type === 'header') {
-          acc.pop();
-        }
-        if (cur.type === 'header' || (cur.type === 'column' && cur.label.toLowerCase().includes(searchValue)))
-          acc.push(cur);
-        return acc;
-      }, []),
-    );
+    const columns = dataSet.reduce((acc, cur) => {
+      if (cur.type === 'header' && acc.length > 0 && acc[-1]?.type === 'header') {
+        acc.pop();
+      }
+      if (cur.type === 'header' || (cur.type === 'column' && cur.label.toLowerCase().includes(searchValue)))
+        acc.push(cur);
+      return acc;
+    }, []);
+    if (columns[-1]?.type === 'header') {
+      columns.pop();
+    }
+    setDisplayColumns(columns);
   };
 
   const onCheck = (index, name) => {
