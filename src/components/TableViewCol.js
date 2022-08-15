@@ -41,14 +41,14 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
     const dataSet = value.includes(previous) ? displayColumns : defaultColumns;
     const searchValue = value.toLowerCase();
     const columns = dataSet.reduce((acc, cur) => {
-      if (cur.type === 'header' && acc.length > 0 && acc[-1]?.type === 'header') {
+      if (cur.type === 'header' && acc.length > 0 && acc.slice(-1)[0]?.type === 'header') {
         acc.pop();
       }
       if (cur.type === 'header' || (cur.type === 'column' && cur.label.toLowerCase().includes(searchValue)))
         acc.push(cur);
       return acc;
     }, []);
-    if (columns[-1]?.type === 'header') {
+    if (columns.slice(-1)[0]?.type === 'header') {
       columns.pop();
     }
     setDisplayColumns(columns);
