@@ -42,6 +42,9 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
     const searchValue = value.toLowerCase();
     setDisplayColumns(
       dataSet.reduce((acc, cur) => {
+        if (cur.type === 'header' && acc[-1].type === 'header') {
+          acc.pop();
+        }
         if (cur.type === 'header' || (cur.type === 'column' && cur.label.toLowerCase().includes(searchValue)))
           acc.push(cur);
         return acc;
