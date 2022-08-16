@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { FormControl, Typography, FormGroup, Checkbox, FormControlLabel } from '@material-ui/core';
+import { FormControl, Typography, FormGroup, Checkbox, FormControlLabel, ListSubheader } from '@material-ui/core';
 import { columnSelectionStyles as getStyles } from './styles';
 import TableViewColSearchBar from './TableViewColSearchBar';
 
@@ -10,9 +10,25 @@ function parseColumns(columns) {
     return acc;
   }, []);
 }
+function parseGroupedColumns(groupedColumns) {
+  let index = 0;
+  return groupedColumns.reduce((acc, cur) => {
+    const header = { name: cur.groupName, type: 'header' };
+    const columns = cur.groupItems.reduce((acc1, cur1) => {
+      if (cur1.options.display === 'excluded' || cur1.viewColumns === false) {
+        return acc1;
+      }
+      return [...acc1, { ...cur1, type: 'column', dataIndex: index++, display: cur1.options.display }];
+    }, []);
+    return columns.length > 0 ? [...acc, header, ...columns] : acc;
+  }, []);
+}
 
-export default function TableViewCol({ columns, onColumnUpdate, components, options }) {
-  const defaultColumns = useMemo(() => parseColumns(columns), [columns]);
+export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, components, options }) {
+  const defaultColumns =
+    groupedColumns.length > 0
+      ? useMemo(() => parseGroupedColumns(groupedColumns), [groupedColumns])
+      : useMemo(() => parseColumns(columns), [columns]);
   const [displayColumns, setDisplayColumns] = useState(defaultColumns);
   const classes = getStyles();
 
@@ -24,17 +40,23 @@ export default function TableViewCol({ columns, onColumnUpdate, components, opti
     // if the input is the same or builds on top of the previous we can just search inside the same dataset
     const dataSet = value.includes(previous) ? displayColumns : defaultColumns;
     const searchValue = value.toLowerCase();
-    setDisplayColumns(
-      dataSet.reduce((acc, cur) => {
-        if (cur.label.toLowerCase().includes(searchValue)) acc.push(cur);
-        return acc;
-      }, []),
-    );
+    const columns = dataSet.reduce((acc, cur) => {
+      if (cur.type === 'header' && acc.length > 0 && acc.slice(-1)[0]?.type === 'header') {
+        acc.pop();
+      }
+      if (cur.type === 'header' || (cur.type === 'column' && cur.label.toLowerCase().includes(searchValue)))
+        acc.push(cur);
+      return acc;
+    }, []);
+    if (columns.slice(-1)[0]?.type === 'header') {
+      columns.pop();
+    }
+    setDisplayColumns(columns);
   };
 
-  const onCheck = index => {
-    setDisplayColumns([
-      ...displayColumns.map(c => {
+  const onCheck = (index, name) => {
+    setDisplayColumns(prev => [
+      ...prev.map(c => {
         if (c.dataIndex === index) {
           const tmp = c;
           tmp.display = c.display === 'true' ? 'false' : 'true';
@@ -42,7 +64,9 @@ export default function TableViewCol({ columns, onColumnUpdate, components, opti
         return c;
       }),
     ]);
-    onColumnUpdate(index);
+    onColumnUpdate(
+      groupedColumns.length > 0 ? parseColumns(columns).find(column => column.name === name).dataIndex : index,
+    );
   };
 
   const handleClearSearchBar = () => {
@@ -60,10 +84,13 @@ export default function TableViewCol({ columns, onColumnUpdate, components, opti
           handleClearSearchBar={handleClearSearchBar}
         />
       )}
-
       <FormGroup className={classes.formGroup}>
-        {displayColumns.map(({ display, label, name, dataIndex }) => {
-          return (
+        {displayColumns.map(({ display, label, name, dataIndex, type = 'column' }) => {
+          return type === 'header' ? (
+            <ListSubheader disableSticky className={classes.listSubheader}>
+              {name}
+            </ListSubheader>
+          ) : (
             <FormControlLabel
               classes={{ label: classes.checkboxLabel }}
               key={name}
@@ -72,7 +99,7 @@ export default function TableViewCol({ columns, onColumnUpdate, components, opti
                   color="primary"
                   className={classes.checkbox}
                   data-description="column display option"
-                  onChange={() => onCheck(dataIndex)}
+                  onChange={() => onCheck(dataIndex, name)}
                   checked={display === 'true'}
                   value={name}
                 />
@@ -89,6 +116,8 @@ export default function TableViewCol({ columns, onColumnUpdate, components, opti
 TableViewCol.propTypes = {
   /** Columns used to describe table */
   columns: PropTypes.array.isRequired,
+  /** Specify if columns are to be grouped */
+  groupedColumns: PropTypes.array,
   /** Options used to describe table */
   options: PropTypes.object.isRequired,
   /** Callback to trigger View column update */
