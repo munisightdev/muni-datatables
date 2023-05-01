@@ -307,19 +307,25 @@ class TableBody extends React.Component {
                           print={columns[column.index].print}
                           options={options}
                           tableId={tableId}
+                          isEmpty={false}
                           key={column.index}>
                           {column.value}
                         </TableBodyCell>
                       ),
                   )}
                 </TableBodyRow>
-                {this.isRowExpanded(dataIndex) && options.renderExpandableRow(row, { rowIndex, dataIndex })}
+                {this.isRowExpanded(dataIndex) &&
+                  options.renderExpandableRow(row, {
+                    rowIndex,
+                    dataIndex
+                })}
               </React.Fragment>
             );
           })
         ) : (
           <TableBodyRow options={options}>
             <TableBodyCell
+              isEmpty={true}
               colSpan={options.selectableRows !== 'none' || options.expandableRows ? visibleColCnt + 1 : visibleColCnt}
               options={options}
               colIndex={0}

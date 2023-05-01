@@ -117,6 +117,8 @@ class MUIDataTable extends React.Component {
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
     /** Data used to describe table */
     data: PropTypes.array.isRequired,
+    /** Column data separated into groups */
+    groupedColumns: PropTypes.array,
     /** Columns used to describe table */
     columns: PropTypes.PropTypes.arrayOf(
       PropTypes.oneOfType([
@@ -133,6 +135,7 @@ class MUIDataTable extends React.Component {
             searchable: PropTypes.bool,
             download: PropTypes.bool,
             viewColumns: PropTypes.bool,
+            viewColumnsSearch: PropTypes.bool,
             filterList: PropTypes.array,
             filterOptions: PropTypes.oneOfType([
               PropTypes.array,
@@ -261,6 +264,7 @@ class MUIDataTable extends React.Component {
     options: {},
     data: [],
     columns: [],
+    groupedColumns: [],
     components: {
       TableBody: DefaultTableBody,
       TableFilter: DefaultTableFilter,
@@ -298,6 +302,7 @@ class MUIDataTable extends React.Component {
       displayData: [],
       filterData: [],
       filterList: [],
+      groupedColumns: [],
       page: 0,
       previousSelectedRow: null,
       rowsPerPage: 10,
@@ -428,6 +433,7 @@ class MUIDataTable extends React.Component {
     sortOrder: {},
     textLabels: getTextLabels(),
     viewColumns: true,
+    viewColumnsSearch: false,
     selectToolbarPlacement: STP.REPLACE,
   });
 
@@ -673,7 +679,7 @@ class MUIDataTable extends React.Component {
       columnOrder = prevColumnOrder;
     }
 
-    return { columns: columnData, filterData, filterList, columnOrder };
+    return { columns: columnData, filterData, filterList, columnOrder, groupedColumns: this.props.groupedColumns };
   };
 
   transformData = (columns, data) => {
@@ -700,11 +706,12 @@ class MUIDataTable extends React.Component {
 
   setTableData(props, status, dataUpdated, callback = () => {}, fromConstructor = false) {
     let tableData = [];
-    let { columns, filterData, filterList, columnOrder } = this.buildColumns(
+    let { columns, filterData, filterList, columnOrder, groupedColumns } = this.buildColumns(
       props.columns,
       this.state.columns,
       this.options.columnOrder,
       this.state.columnOrder,
+      this.state.groupedColumns
     );
 
     let sortIndex = null;
@@ -913,6 +920,7 @@ class MUIDataTable extends React.Component {
     /* set source data and display Data set source set */
     let stateUpdates = {
       columns: columns,
+      groupedColumns: groupedColumns,
       filterData: filterData,
       filterList: filterList,
       searchText: searchText,
@@ -986,8 +994,8 @@ class MUIDataTable extends React.Component {
           typeof funcResult === 'string' || !funcResult
             ? funcResult
             : funcResult.props && funcResult.props.value
-            ? funcResult.props.value
-            : columnValue;
+              ? funcResult.props.value
+              : columnValue;
 
         displayRow.push(columnDisplay);
       } else {
@@ -1230,6 +1238,7 @@ class MUIDataTable extends React.Component {
     this.setState(
       prevState => {
         let columns = cloneDeep(prevState.columns);
+        let groupedColumns = cloneDeep(prevState.groupedColumns);
         let data = prevState.data;
         let newOrder = columns[index].sortDescFirst ? 'desc' : 'asc'; // default
 
@@ -1260,6 +1269,7 @@ class MUIDataTable extends React.Component {
 
         let newState = {
           columns: columns,
+          groupedColumns: groupedColumns,
           announceText: announceText,
           activeColumn: index,
         };
@@ -1537,13 +1547,7 @@ class MUIDataTable extends React.Component {
     const cleanRows = data.filter(({ index }) => !selectedMap[index]);
 
     if (this.options.onRowsDelete) {
-      if (
-        this.options.onRowsDelete(
-          selectedRows,
-          cleanRows.map(ii => ii.data),
-        ) === false
-      )
-        return;
+      if (this.options.onRowsDelete(selectedRows, cleanRows.map(ii => ii.data)) === false) return;
     }
 
     this.setTableData(
@@ -1844,6 +1848,7 @@ class MUIDataTable extends React.Component {
       data,
       displayData,
       columns,
+      groupedColumns,
       page,
       filterData,
       filterList,
@@ -1948,6 +1953,7 @@ class MUIDataTable extends React.Component {
           showToolbar && (
             <TableToolbarComponent
               columns={columns}
+              groupedColumns={groupedColumns}
               columnOrder={columnOrder}
               displayData={displayData}
               data={data}

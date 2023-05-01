@@ -165,6 +165,7 @@ The component accepts the following props:
 |:--:|:-----|:-----|
 |**`title`**|array|Title used to caption table
 |**`columns`**|array|Columns used to describe table. Must be either an array of simple strings or objects describing a column
+|**`groupedColumns`**|array|Column information used to describe the table if columns are to be grouped in the TableViewCol component.
 |**`data`**|array|Data used to describe table. Must be either an array containing objects of key/value pairs with values that are strings or numbers, or arrays of strings or numbers (Ex: data: [{"Name": "Joe", "Job Title": "Plumber", "Age": 30}, {"Name": "Jane", "Job Title": "Electrician", "Age": 45}] or data: [["Joe", "Plumber", 30], ["Jane", "Electrician", 45]]). The **customBodyRender** and **customBodyRenderLite** options can be used to control the data display.
 |**`options`**|object|Options used to describe table
 |**`components`**|object|Custom components used to render the table
@@ -256,7 +257,39 @@ The component accepts the following props:
 |**`tableBodyMaxHeight`**|string||CSS string for the height of the table (ex: '500px', '100%', 'auto').
 |**`textLabels`**|object||User provided labels to localize text.
 |**`viewColumns`**|boolean or string|true|Show/hide viewColumns icon from toolbar. Possible values:<p><ul><li>true: Button is visiable and clickable.</li><li>false: Button is not visible.</li><li>disabled: Button is visible, but not clickable.</li></ul></p>
+|**`viewColumnsSearch`**|boolean|false|Enable/disable searchBar in the TableViewCol component.
 |**`storageKey`**|string|| save current state to local storage(Only browser).
+
+## Grouped Columns
+
+You also have the ability to group columns in the TableViewCol component by using the groupedColumns property. Example:
+
+```js
+const groupedColumns = [
+ {
+  groupName: 'Name',
+  groupItems: [
+   {
+    name: "Name",
+    label: "Label"
+    options: {
+     filter: true,
+     sort: false
+    }
+   },
+   ...
+  ]
+ },
+ ...
+];
+```
+
+#### groupedColumn:
+|Name|Type|Description
+|:--:|:-----|:-----|
+|**`groupName`**|string|Display name for group
+|**`groupItems`**|array|Array of columns objects that belong in the group)
+
 
 ## Customize Columns
 
