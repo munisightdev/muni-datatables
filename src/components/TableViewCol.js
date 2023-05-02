@@ -30,7 +30,7 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
       ? useMemo(() => parseGroupedColumns(groupedColumns), [groupedColumns])
       : useMemo(() => parseColumns(columns), [columns]);
   const [displayColumns, setDisplayColumns] = useState(defaultColumns);
-  const classes = getStyles();
+  const { classes } = getStyles();
 
   const textLabels = options.textLabels.viewColumns;
   const showSearch = options.viewColumnsSearch || false;
