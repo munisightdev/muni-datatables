@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 export const columnSelectionStyles = makeStyles(theme => ({
   root: { padding: '16px 24px 16px 24px', fontFamily: 'Roboto' },
