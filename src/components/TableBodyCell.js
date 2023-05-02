@@ -31,7 +31,7 @@ const useStyles = makeStyles({ name: 'MUIDataTableBodyCell' })(theme => ({
       display: 'inline-block',
       fontSize: '16px',
       height: 'auto',
-      width: 'calc(50%)',
+      width: props => (props.isEmpty ? 'calc(100%)' : 'calc(50%)'),
       boxSizing: 'border-box',
       '&:last-child': {
         borderBottom: 'none',
@@ -91,7 +91,7 @@ const useStyles = makeStyles({ name: 'MUIDataTableBodyCell' })(theme => ({
 }));
 
 function TableBodyCell(props) {
-  const { classes } = useStyles();
+  const { classes } = useStyles(props);
   const {
     children,
     colIndex,
@@ -102,6 +102,7 @@ function TableBodyCell(props) {
     className,
     print,
     tableId,
+    isEmpty,
     ...otherProps
   } = props;
   const onCellClick = options.onCellClick;
@@ -169,7 +170,7 @@ function TableBodyCell(props) {
 
   var innerCells;
   if (
-    ['standard', 'scrollMaxHeight', 'scrollFullHeight', 'scrollFullHeightFullWidth'].indexOf(options.responsive) !== -1
+    ['standard', 'scrollMaxHeight', 'scrollFullHeight', 'scrollFullHeightFullWidth'].indexOf(options.responsive) !== -1 || isEmpty
   ) {
     innerCells = cells.slice(1, 2);
   } else {
