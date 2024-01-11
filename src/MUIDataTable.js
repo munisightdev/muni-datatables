@@ -1212,6 +1212,48 @@ class MUIDataTable extends React.Component {
     );
   };
 
+  selectAllColumns = () => {
+    this.setState(
+      prevState => {
+        const newColumns = prevState.columns.map(column => 
+          column.display === 'false' ? { ...column, display: 'true' } : column
+        );
+        return {
+          columns: newColumns,
+        };
+      },
+      () => {
+        this.setTableAction('viewColumnsChange');
+        var cb = this.options.onViewColumnsChange || this.options.onColumnViewChange;
+  
+        if (cb) {
+          this.state.columns.forEach(column => cb(column.name, column.display));
+        }
+      },
+    );
+  };
+  
+  deselectAllColumns = () => {
+    this.setState(
+      prevState => {
+        const newColumns = prevState.columns.map(column => 
+          column.display === 'true' ? { ...column, display: 'false' } : column
+        );
+        return {
+          columns: newColumns,
+        };
+      },
+      () => {
+        this.setTableAction('viewColumnsChange');
+        var cb = this.options.onViewColumnsChange || this.options.onColumnViewChange;
+  
+        if (cb) {
+          this.state.columns.forEach(column => cb(column.name, column.display));
+        }
+      },
+    );
+  };
+
   getSortDirectionLabel(sortOrder) {
     switch (sortOrder.direction) {
       case 'asc':
@@ -1969,6 +2011,8 @@ class MUIDataTable extends React.Component {
               tableRef={this.getTableContentRef}
               title={title}
               toggleViewColumn={this.toggleViewColumn}
+              selectAllColumns={this.selectAllColumns}
+              deselectAllColumns={this.deselectAllColumns}
               updateColumns={this.updateColumns}
               setTableAction={this.setTableAction}
               components={this.props.components}
