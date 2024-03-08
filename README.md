@@ -186,6 +186,7 @@ The component accepts the following props:
 |**`customTableBodyFooterRender`**|function||Render a footer under the table body but above the table's standard footer. This is useful for creating footers for individual columns. [Example](https://github.com/gregnb/mui-datatables/blob/master/examples/customize-footer/index.js)
 |**`customToolbar`**|function||Render a custom toolbar `function({displayData}) => React Component`
 |**`customToolbarSelect`**|function||Render a custom selected rows toolbar. `function(selectedRows, displayData, setSelectedRows) => void`
+|**`deselectAllColumns`**|function||Deselects all columns in the view/hide list of columns.
 |**`download`**|boolean or string|true|Show/hide download icon from toolbar.  Possible values:<p><ul><li>true: Button is visible and clickable.</li><li>false: Button is not visible.</li><li>disabled: Button is visible, but not clickable.</li></ul></p>
 |**`downloadOptions`**|object|see ->|An object of options to change the output of the CSV file:<p><ul><li>`filename`: string</li><li>`separator`: string</li><li>`filterOptions`: object<ul><li>`useDisplayedColumnsOnly`: boolean</li><li>`useDisplayedRowsOnly`: boolean</li></ul></li></ul></p><p>Default Value:`{filename: 'tableDownload.csv', separator: ','}`</p>
 |**`draggableColumns`**|object|{}|An object of options describing how dragging columns should work. The options are: <p><ul><li>`enabled:boolean`: Indicates if draggable columns are enabled. Defaults to false.</li><li>`transitionTime:number`: The time in milliseconds it takes for columns to swap positions. Defaults to 300.</li></ul></p>To disable the dragging of a particular column, see the "draggable" option in the columns options. Dragging a column to a new position updates the columnOrder array and triggers the onColumnOrderChange callback.
@@ -244,6 +245,7 @@ The component accepts the following props:
 |**`selectableRowsHeader`**|boolean|true|Show/hide the select all/deselect all checkbox header for selectable rows.
 |**`selectableRowsHideCheckboxes`**|boolean|false|Hides the checkboxes that appear when selectableRows is set to "multiple" or "single". Can provide a more custom UX, especially when paired with selectableRowsOnClick.
 |**`selectableRowsOnClick`**|boolean|false|Enable/disable select toggle when row is clicked. When False, only checkbox will trigger this action.
+|**`selectAllColumns`**|function||A function which selects every column in the view/hide list of columns.
 |**`selectToolbarPlacement`**|string|'replace'|Controls the visibility of the Select Toolbar, options are 'replace' (select toolbar replaces default toolbar when a row is selected), 'above' (select toolbar will appear above default toolbar when a row is selected) and 'none' (select toolbar will never appear)
 |**`serverSide`**|boolean|false|Enable remote data source.
 |**`setFilterChipProps`**|function||Is called for each filter chip and allows you to place custom props on a filter chip. `function(colIndex: number, colName: string, filterValue: string) => object` [Example](https://github.com/gregnb/mui-datatables/blob/master/examples/customize-filter/index.js)

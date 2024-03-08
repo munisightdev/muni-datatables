@@ -24,7 +24,7 @@ function parseGroupedColumns(groupedColumns) {
   }, []);
 }
 
-export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, components, options }) {
+export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, onSelectAllColumns, onDeselectAllColumns, components, options }) {
   const defaultColumns =
     groupedColumns.length > 0
       ? useMemo(() => parseGroupedColumns(groupedColumns), [groupedColumns])
@@ -85,6 +85,48 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
         />
       )}
       <FormGroup className={classes.formGroup}>
+        { options.selectAllOption && (
+          <>
+            <FormControlLabel
+              key={'selectAll'}
+              classes={{
+                root: classes.formControl,
+                label: classes.label,
+              }}
+              control={<CheckboxComponent
+                color="primary"
+                data-description="table-view-col"
+                className={classes.checkbox}
+                classes={{
+                  root: classes.checkboxRoot,
+                  checked: classes.checked,
+                }}
+                onChange={() => onSelectAllColumns()}
+                checked={columns.every(column => column.display === 'true')}
+                value="selectAll" />}
+              label='Select All' />
+              { columns.filter(c => c.display === 'true').length !== 0 && (
+                <FormControlLabel
+                  key={'deselectAll'}
+                  classes={{
+                    root: classes.formControl,
+                    label: classes.label,
+                  }}
+                  control={<CheckboxComponent
+                    color="primary"
+                    data-description="table-view-col"
+                    className={classes.checkbox}
+                    classes={{
+                      root: classes.checkboxRoot,
+                      checked: classes.checked,
+                    }}
+                    onChange={() => onDeselectAllColumns()}
+                    checked={columns.every(column => column.display === 'false')}
+                    value="deselectAll" />}
+                  label='Deselect All' />
+            )}
+          </>
+        )}
         {displayColumns.map(({ display, label, name, dataIndex, type = 'column' }) => {
           return type === 'header' ? (
             <ListSubheader disableSticky className={classes.listSubheader}>
