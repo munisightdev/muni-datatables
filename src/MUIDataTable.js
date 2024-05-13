@@ -108,7 +108,7 @@ const STP = {
   REPLACE: 'replace',
   ABOVE: 'above',
   NONE: 'none',
-  ALWAYS: 'always'
+  ALWAYS: 'always',
 };
 
 class MUIDataTable extends React.Component {
@@ -457,7 +457,7 @@ class MUIDataTable extends React.Component {
         [
           'scrollMaxHeight',
           'scrollFullHeight',
-          'stacked',
+          // 'stacked', TODO: stacked was marked as deprecated but is still around in v4. Certain functionality relies on it.
           'stackedFullWidth',
           'scrollFullHeightFullWidth',
           'scroll',
@@ -711,7 +711,7 @@ class MUIDataTable extends React.Component {
       this.state.columns,
       this.options.columnOrder,
       this.state.columnOrder,
-      this.state.groupedColumns
+      this.state.groupedColumns,
     );
 
     let sortIndex = null;
@@ -994,8 +994,8 @@ class MUIDataTable extends React.Component {
           typeof funcResult === 'string' || !funcResult
             ? funcResult
             : funcResult.props && funcResult.props.value
-              ? funcResult.props.value
-              : columnValue;
+            ? funcResult.props.value
+            : columnValue;
 
         displayRow.push(columnDisplay);
       } else {
@@ -1215,8 +1215,8 @@ class MUIDataTable extends React.Component {
   selectAllColumns = () => {
     this.setState(
       prevState => {
-        const newColumns = prevState.columns.map(column => 
-          column.display === 'false' ? { ...column, display: 'true' } : column
+        const newColumns = prevState.columns.map(column =>
+          column.display === 'false' ? { ...column, display: 'true' } : column,
         );
         return {
           columns: newColumns,
@@ -1225,19 +1225,19 @@ class MUIDataTable extends React.Component {
       () => {
         this.setTableAction('viewColumnsChange');
         var cb = this.options.onViewColumnsChange || this.options.onColumnViewChange;
-  
+
         if (cb) {
           this.state.columns.forEach(column => cb(column.name, column.display));
         }
       },
     );
   };
-  
+
   deselectAllColumns = () => {
     this.setState(
       prevState => {
-        const newColumns = prevState.columns.map(column => 
-          column.display === 'true' ? { ...column, display: 'false' } : column
+        const newColumns = prevState.columns.map(column =>
+          column.display === 'true' ? { ...column, display: 'false' } : column,
         );
         return {
           columns: newColumns,
@@ -1246,7 +1246,7 @@ class MUIDataTable extends React.Component {
       () => {
         this.setTableAction('viewColumnsChange');
         var cb = this.options.onViewColumnsChange || this.options.onColumnViewChange;
-  
+
         if (cb) {
           this.state.columns.forEach(column => cb(column.name, column.display));
         }
@@ -1589,7 +1589,13 @@ class MUIDataTable extends React.Component {
     const cleanRows = data.filter(({ index }) => !selectedMap[index]);
 
     if (this.options.onRowsDelete) {
-      if (this.options.onRowsDelete(selectedRows, cleanRows.map(ii => ii.data)) === false) return;
+      if (
+        this.options.onRowsDelete(
+          selectedRows,
+          cleanRows.map(ii => ii.data),
+        ) === false
+      )
+        return;
     }
 
     this.setTableData(
@@ -1980,7 +1986,8 @@ class MUIDataTable extends React.Component {
 
     return (
       <Paper elevation={this.options.elevation} ref={this.tableContent} className={paperClasses}>
-        {(this.options.selectToolbarPlacement === STP.ALWAYS || selectedRows.data.length > 0 && this.options.selectToolbarPlacement !== STP.NONE) && (
+        {(this.options.selectToolbarPlacement === STP.ALWAYS ||
+          (selectedRows.data.length > 0 && this.options.selectToolbarPlacement !== STP.NONE)) && (
           <TableToolbarSelectComponent
             options={this.options}
             selectedRows={selectedRows}
