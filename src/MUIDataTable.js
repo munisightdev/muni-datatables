@@ -231,7 +231,7 @@ class MUIDataTable extends React.Component {
       tableBodyMaxHeight: PropTypes.string,
       renderExpandableRow: PropTypes.func,
       resizableColumns: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
-      responsive: PropTypes.oneOf(['standard', 'vertical', 'verticalAlways', 'simple']),
+      responsive: PropTypes.oneOf(['standard', 'vertical', 'verticalAlways', 'simple', 'stacked']),
       rowHover: PropTypes.bool,
       rowsExpanded: PropTypes.array,
       rowsPerPage: PropTypes.number,
