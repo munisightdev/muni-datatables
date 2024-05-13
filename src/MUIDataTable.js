@@ -452,7 +452,7 @@ class MUIDataTable extends React.Component {
       );
       this.options.selectableRows = this.options.selectableRows ? 'multiple' : 'none';
     }
-    if (['standard', 'vertical', 'verticalAlways', 'simple'].indexOf(this.options.responsive) === -1) {
+    if (['standard', 'vertical', 'verticalAlways', 'simple', 'stacked'].indexOf(this.options.responsive) === -1) {
       if (
         [
           'scrollMaxHeight',
