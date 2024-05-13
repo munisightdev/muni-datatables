@@ -24,11 +24,19 @@ function parseGroupedColumns(groupedColumns) {
   }, []);
 }
 
-export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, onSelectAllColumns, onDeselectAllColumns, components, options }) {
-  const defaultColumns =
-    groupedColumns.length > 0
-      ? useMemo(() => parseGroupedColumns(groupedColumns), [groupedColumns])
-      : useMemo(() => parseColumns(columns), [columns]);
+export default function TableViewCol({
+  columns,
+  groupedColumns,
+  onColumnUpdate,
+  onSelectAllColumns,
+  onDeselectAllColumns,
+  components,
+  options,
+}) {
+  const defaultColumns = useMemo(
+    () => (groupedColumns.length > 0 ? parseGroupedColumns(groupedColumns) : parseColumns(columns)),
+    [groupedColumns, columns],
+  );
   const [displayColumns, setDisplayColumns] = useState(defaultColumns);
   const classes = getStyles();
 
@@ -85,7 +93,7 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
         />
       )}
       <FormGroup className={classes.formGroup}>
-        { options.selectAllOption && (
+        {options.selectAllOption && (
           <>
             <FormControlLabel
               key={'selectAll'}
@@ -93,26 +101,31 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
                 root: classes.formControl,
                 label: classes.label,
               }}
-              control={<CheckboxComponent
-                color="primary"
-                data-description="table-view-col"
-                className={classes.checkbox}
-                classes={{
-                  root: classes.checkboxRoot,
-                  checked: classes.checked,
-                }}
-                onChange={() => onSelectAllColumns()}
-                checked={columns.every(column => column.display === 'true')}
-                value="selectAll" />}
-              label='Select All' />
-              { columns.filter(c => c.display === 'true').length !== 0 && (
-                <FormControlLabel
-                  key={'deselectAll'}
+              control={
+                <CheckboxComponent
+                  color="primary"
+                  data-description="table-view-col"
+                  className={classes.checkbox}
                   classes={{
-                    root: classes.formControl,
-                    label: classes.label,
+                    root: classes.checkboxRoot,
+                    checked: classes.checked,
                   }}
-                  control={<CheckboxComponent
+                  onChange={() => onSelectAllColumns()}
+                  checked={columns.every(column => column.display === 'true')}
+                  value="selectAll"
+                />
+              }
+              label="Select All"
+            />
+            {columns.filter(c => c.display === 'true').length !== 0 && (
+              <FormControlLabel
+                key={'deselectAll'}
+                classes={{
+                  root: classes.formControl,
+                  label: classes.label,
+                }}
+                control={
+                  <CheckboxComponent
                     color="primary"
                     data-description="table-view-col"
                     className={classes.checkbox}
@@ -122,8 +135,11 @@ export default function TableViewCol({ columns, groupedColumns, onColumnUpdate, 
                     }}
                     onChange={() => onDeselectAllColumns()}
                     checked={columns.every(column => column.display === 'false')}
-                    value="deselectAll" />}
-                  label='Deselect All' />
+                    value="deselectAll"
+                  />
+                }
+                label="Deselect All"
+              />
             )}
           </>
         )}
